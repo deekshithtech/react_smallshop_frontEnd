@@ -6,15 +6,16 @@ import { Link } from 'react-router-dom';
 const Purchases = () => {
   const [items, setItems] = useState([]);
   const [cart, setCart] = useState([]);
-  const [addedItem, setAddedItem] = useState(null); // success message
+  const [addedItem, setAddedItem] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/items/") // Update as needed
+    axios.get("http://localhost:8000/api/items/")
       .then(res => {
         if (res.data.success === "true") {
           const formatted = res.data.data.map(item => ({
             id: item.item_id,
             name: item.name,
+            description: item.description || "No description available",
             price: item.price,
             stock: item.inventory?.quantity || 0,
             image: `https://via.placeholder.com/200x200.png?text=${item.name}`,
@@ -32,8 +33,8 @@ const Purchases = () => {
     const existing = cart.find(c => c.id === item.id);
     if (!existing) {
       if (item.stock > 0) {
-        setCart([...cart, { id: item.id, quantity: 1 }]);
-        setAddedItem(item.name); // show success
+        setCart([...cart, { ...item, quantity: 1 }]); // Store full item details
+        setAddedItem(item.name);
         setTimeout(() => setAddedItem(null), 2000);
       } else {
         alert("Stock not available");
@@ -42,7 +43,7 @@ const Purchases = () => {
       setCart(cart.map(c =>
         c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c
       ));
-      setAddedItem(item.name); // show success
+      setAddedItem(item.name);
       setTimeout(() => setAddedItem(null), 2000);
     } else {
       alert("Stock not available");
@@ -90,30 +91,26 @@ const Purchases = () => {
   };
 
   const getTotal = () => {
-    return cart.reduce((sum, c) => {
-      const item = items.find(i => i.id === c.id);
-      return sum + item.price * c.quantity;
-    }, 0);
+    return cart.reduce((sum, c) => sum + c.price * c.quantity, 0);
   };
 
   return (
     <div className="container mx-auto px-2 py-6">
       <h1 className="text-2xl font-bold text-purple-700 mb-4">Available Products</h1>
 
-      {/* ✅ Success Message */}
       {addedItem && (
-        <div className="mb-4 px-3 py-2 bg-green-100 text-green-800 rounded shadow text-sm">
+        <div className="mb-4 px-3 py-2 bg-green-100 text-green-800 rounded shadow text-md">
           ✅ {addedItem} added to cart!
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
         {items.map(item => (
           <div key={item.id} className="bg-white shadow border rounded-lg overflow-hidden hover:shadow-md transition">
             <img
               src={item.image}
               alt={item.name}
-              className="w-full h-40 object-contain bg-gray-50"
+              className="w-full h-30 object-contain bg-gray-50"
             />
             <div className="p-3">
               <h3 className="font-semibold text-sm mb-1 text-gray-800 truncate">{item.name}</h3>
@@ -200,15 +197,13 @@ const Purchases = () => {
               <FaTrash />
             </button>
           </div>
-          <button className="w-full bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 text-sm">
-<Link 
-  to="/shipping" 
-  state={{ cart: cart, total: getTotal() }}
-  className="w-full bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 text-sm block text-center"
->
-  Purchase Now
-</Link>
-          </button>
+          <Link 
+            to="/shipping" 
+            state={{ cart, total: getTotal() }}
+            className="w-full bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 text-sm block text-center"
+          >
+            Purchase Now
+          </Link>
         </div>
       )}
     </div>

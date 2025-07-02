@@ -18,7 +18,6 @@ const Items = () => {
 
   const categories = ['Electronics', 'Clothing', 'Groceries', 'Home', 'Other'];
 
-  // 🔹 Get All Items
   useEffect(() => {
     fetchItems();
   }, []);
@@ -35,7 +34,6 @@ const Items = () => {
     }
   };
 
-  // 🔹 Filter on Search
   useEffect(() => {
     const results = items.filter(item =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,7 +59,6 @@ const Items = () => {
     }
   };
 
-  // 🔹 Add or Update Item
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,25 +68,22 @@ const Items = () => {
       price: parseFloat(formData.price),
       category: formData.category,
       image: formData.image,
-      quantity: 10  // default value
+      quantity: 10
     };
 
     try {
       if (editingId) {
-        // Update existing item
         const res = await axios.patch(`http://localhost:8000/api/items/${editingId}`, payload);
         if (res.data.success) {
-          fetchItems(); // Refresh the list
+          fetchItems();
         }
       } else {
-        // Create new item
         const res = await axios.post('http://localhost:8000/api/items/', payload);
         if (res.data.success) {
-          fetchItems(); // Refresh the list
+          fetchItems();
         }
       }
 
-      // Reset form
       setFormData({ name: '', description: '', price: '', category: 'Electronics', image: '' });
       setPreviewImage('');
       setEditingId(null);
@@ -98,7 +92,6 @@ const Items = () => {
     }
   };
 
-  // 🔹 Edit item
   const handleEdit = (item) => {
     setFormData({
       name: item.name,
@@ -109,43 +102,45 @@ const Items = () => {
     });
     setEditingId(item.item_id);
     setPreviewImage(item.image || '');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
 const handleDelete = async (id) => {
-  if (window.confirm('Are you sure you want to delete this item?')) {
-    try {
-      const res = await axios.delete(`http://localhost:8000/api/items/${id}`);
-      if (res.status === 204 || res.data?.success) {
-        // Update both items and filteredItems state immediately
-        setItems(prev => prev.filter(item => item.item_id !== id));
-        setFilteredItems(prev => prev.filter(item => item.item_id !== id));
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
+  const confirmDelete = window.confirm('Are you sure you want to delete this item?');
+  if (!confirmDelete) return;
+
+  try {
+    const res = await axios.delete(`http://localhost:8000/api/items/${id}`);
+    if (res.status === 204 || res.data?.success) {
+      setItems(prevItems => prevItems.filter(item => item.item_id !== id));
+      setFilteredItems(prevItems => prevItems.filter(item => item.item_id !== id));
+    } else {
+      alert('Failed to delete the item!');
     }
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    alert('Something went wrong while deleting.');
   }
 };
 
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
-        <h1 className="text-3xl font-bold text-purple-700 mb-6">Product Add by Shop Owner</h1>
+      <div className="bg-gray-200 rounded-xl shadow-md overflow-hidden p-6 mb-8">
+        <h1 className="text-3xl font-bold text-green-700 mb-6">Product Add by Shop Owner</h1>
 
-        {/* Search */}
         <div className="mb-4">
           <input
             type="text"
             placeholder="Search by name or category..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white"
           />
         </div>
 
-        {/* Form */}
-        <div className="bg-purple-50 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold text-purple-700 mb-4">
+        <div className="bg-gray-100 p-6 rounded-lg mb-8">
+          <h2 className="text-xl font-bold text-purple-700 mb-4">
             {editingId ? 'Edit Product' : 'Add New Product'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -158,7 +153,7 @@ const handleDelete = async (id) => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border rounded-lg bg-white"
                     required
                   />
                 </div>
@@ -168,7 +163,7 @@ const handleDelete = async (id) => {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border rounded-lg bg-blue-100"
                   >
                     {categories.map(category => (
                       <option key={category} value={category}>{category}</option>
@@ -182,7 +177,7 @@ const handleDelete = async (id) => {
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border rounded-lg bg-white"
                     required
                     step="0.01"
                   />
@@ -195,7 +190,7 @@ const handleDelete = async (id) => {
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border rounded-lg bg-white"
                     rows="3"
                   />
                 </div>
@@ -205,7 +200,7 @@ const handleDelete = async (id) => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="w-full"
+                    className="w-50 bg-white"
                   />
                   {previewImage && (
                     <img src={previewImage} alt="Preview" className="mt-2 h-20 w-20 object-cover border rounded" />
@@ -221,7 +216,6 @@ const handleDelete = async (id) => {
           </form>
         </div>
 
-        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredItems.map(item => (
             <div key={item.item_id} className="bg-white border rounded-lg shadow p-4">
@@ -239,14 +233,14 @@ const handleDelete = async (id) => {
                 <span className="bg-gray-200 text-xs px-2 py-1 rounded">{item.category}</span>
               </div>
               <div className="flex space-x-2 mt-3">
-                <button 
-                  onClick={() => handleEdit(item)} 
+                <button
+                  onClick={() => handleEdit(item)}
                   className="text-purple-600 hover:text-purple-900"
                 >
                   <FaEdit />
                 </button>
-                <button 
-                  onClick={() => handleDelete(item.item_id)} 
+                <button
+                  onClick={() => handleDelete(item.item_id)}
                   className="text-red-600 hover:text-red-900"
                 >
                   <FaTrash />
