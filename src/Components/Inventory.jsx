@@ -104,7 +104,7 @@ const Inventory = () => {
                             className={`px-3 py-1 rounded text-white ${
                               newQuantity === '' || isNaN(newQuantity)
                                 ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-green-500 hover:bg-green-600'
+                                : 'bg-green-500 hover:bg-green-600 cursor-pointer'
                             }`}
                           >
                             Save
@@ -112,7 +112,7 @@ const Inventory = () => {
                         ) : (
                           <button
                             onClick={() => handleEdit(inv)}
-                            className="text-purple-600 hover:text-purple-900"
+                            className="text-purple-600 hover:text-purple-900 cursor-pointer"
                           >
                             <FaEdit />
                           </button>

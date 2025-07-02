@@ -120,7 +120,7 @@ const Shipping = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 mt-4 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-semibold rounded-lg transition transform hover:scale-105 hover:shadow-xl ${
+              className={`w-full py-3 mt-4 bg-gradient-to-r cursor-pointer from-purple-600 to-purple-400 text-white font-semibold rounded-lg transition transform hover:scale-105 hover:shadow-xl ${
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >

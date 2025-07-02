@@ -170,7 +170,7 @@ const Purchases = () => {
                   onClick={() => handleAddToCart(item)}
                   className={`w-full mt-3 text-sm py-1 rounded flex items-center justify-center gap-1 ${
                     item.stock > 0
-                      ? 'bg-purple-600 text-white hover:bg-purple-700'
+                      ? 'bg-purple-600 text-white hover:bg-purple-700 cursor-pointer'
                       : 'bg-gray-400 text-white cursor-not-allowed'
                   }`}
                   disabled={item.stock === 0}

@@ -209,7 +209,7 @@ const handleDelete = async (id) => {
               </div>
             </div>
             <div className="flex justify-end">
-              <button type="submit" className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+              <button type="submit" className="cursor-pointer px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                 {editingId ? 'Update Product' : 'Add Product'}
               </button>
             </div>
