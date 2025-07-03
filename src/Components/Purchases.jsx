@@ -18,7 +18,7 @@ const Purchases = () => {
             description: item.description || "No description available",
             price: item.price,
             stock: item.inventory?.quantity || 0,
-            image: `https://via.placeholder.com/200x200.png?text=${item.name}`,
+            image:item.image || `https://via.placeholder.com/200x200.png?text=${item.name}`,
             originalPrice: item.price + 100,
             rating: 4.3,
             reviews: 10

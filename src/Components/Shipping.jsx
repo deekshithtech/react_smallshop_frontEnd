@@ -98,15 +98,21 @@ const Shipping = () => {
               className="w-full bg-white/70 backdrop-blur border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-600"
               required
             />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full bg-white/70 backdrop-blur border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-600"
-              required
-            />
+        <input
+  type="text"
+  name="phone"
+  placeholder="Phone Number"
+  value={form.phone}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      handleChange(e);
+    }
+  }}
+  maxLength={10}
+  className="w-full bg-white/70 backdrop-blur border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-600"
+  required
+/>
             <textarea
               name="address"
               placeholder="Shipping Address"
